@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "hw1": "nodemon homework-1/app.js --exec babel-node",
+    "hw2": "nodemon homework-2/app.js --exec babel-node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
