@@ -29,5 +29,9 @@
     "@babel/preset-stage-2": "^7.0.0",
     "@babel/register": "^7.0.0",
     "nodemon": "^1.18.6"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "md5": "^2.2.1"
   }
 }
