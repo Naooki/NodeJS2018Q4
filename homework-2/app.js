@@ -3,9 +3,11 @@ const DirWatcher = require('./dirwatcher');
 process.chdir(__dirname);
 
 
-new DirWatcher().watch('data/').on('changed', file => {
+const dirWatcher = new DirWatcher();
+dirWatcher.on('changed', file => {
     console.log(`Changed: ${file}`);
 });
+dirWatcher.watch('data/');
 
 // const dirWatcher = new DirWatcher();
 // const importer = new Importer(dirWatcher);
