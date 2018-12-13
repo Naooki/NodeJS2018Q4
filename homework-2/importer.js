@@ -1,15 +1,17 @@
 const fs = require('fs');
 const util = require('util');
+const EventEmitter = require('events');
 
-class Importer {
+class Importer extends EventEmitter {
     constructor(dirWatcher, isAsync) {
+        super();
         this.filesData = {};
 
         dirWatcher.on('changed', filePath => {
             if (isAsync) {
-                this._import(filePath).then(console.log);
+                this._import(filePath).then(data => this.emit('processed', data));
             } else {
-                console.log(this._importSync(filePath));
+                this.emit('processed', this._importSync(filePath));
             }
         });
     }
@@ -22,3 +24,5 @@ class Importer {
         return fs.readFileSync(path);
     }
 }
+
+module.exports = Importer;
