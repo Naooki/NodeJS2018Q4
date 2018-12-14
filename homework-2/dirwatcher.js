@@ -2,9 +2,11 @@ const util = require('util');
 const EventEmitter = require('events');
 const fs = require('fs');
 const md5 = require('md5');
+const path = require('path');
 const _ = require('lodash');
 
 const readDir = util.promisify(fs.readdir);
+const resolvePath = path.resolve;
 
 class DirWatcher extends EventEmitter {
     constructor() {
@@ -26,7 +28,7 @@ class DirWatcher extends EventEmitter {
 
     _pollDirectory(path) {
         readDir(path)
-            .then(files => _.map(files, file => `${path}/${file}`))
+            .then(files => _.map(files, file => resolvePath(path, file)))
             .then(filePaths => {
                 if (this._filesHashMap) {
                     for (let key of this._filesHashMap.keys()) {
