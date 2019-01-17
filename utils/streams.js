@@ -1,4 +1,5 @@
 const minimist = require('minimist');
+const streamConstants = require('./streams.constants.js');
 
 function reverse(str) {}
 function transform(str) {}
@@ -22,17 +23,24 @@ function processCommand() {
     const options = Object.keys(args);
 
     if (options.length === 1) {
-        console.log('Wrong input. Options are not provided.');
+        console.log('Invalid input. Options are not provided.\n');
+        console.log(streamConstants.helpMessage);
     } else if (options.indexOf('help') === 1) {
-        console.log('---help info---');
+        console.log(streamConstants.helpMessage);
     } else if (options.indexOf('action') === 1) {
         switch (args.action) {
-            case '':
+            case 'reverse':
                 break;
-            case '':
+            case 'transform':
+                break;
+            case 'outputFile':
+                break;
+            case 'convertFromFile':
+                break;
+            case 'convertToFile':
                 break;
             default:
-                console.error();
+                console.error('Invalid action provided!\n');
         }
     } else {
         console.log('Invalid otions.');
