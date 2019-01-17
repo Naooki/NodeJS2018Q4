@@ -1,8 +1,25 @@
 const minimist = require('minimist');
+const through2 = require('through2');
+
 const streamConstants = require('./streams.constants.js');
 
-function reverse(str) {}
-function transform(str) {}
+function reverse() {
+    process.stdin
+        .pipe(through2(function(chunk, encoding, next) {
+            this.push(chunk.reverse().slice(1));
+            this.push('\n');
+            next();
+        }))
+        .pipe(process.stdout);
+}
+function transform() {
+    process.stdin
+        .pipe(through2(function(chunk, encoding, next) {
+            this.push(chunk.toString().toUpperCase());
+            next();
+        }))
+        .pipe(process.stdout);
+}
 function outputFile(filePath) {}
 function convertFromFile(filePath) {}
 function convertToFile(filePath) {}
@@ -30,8 +47,10 @@ function processCommand() {
     } else if (options.indexOf('action') === 1) {
         switch (args.action) {
             case 'reverse':
+                reverse();
                 break;
             case 'transform':
+                transform();
                 break;
             case 'outputFile':
                 break;
@@ -43,7 +62,7 @@ function processCommand() {
                 console.error('Invalid action provided!\n');
         }
     } else {
-        console.log('Invalid otions.');
+        console.log('Invalid options.');
     }
 }
 
