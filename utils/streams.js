@@ -2,6 +2,7 @@ const minimist = require('minimist');
 const through2 = require('through2');
 const chalk = require('chalk');
 const fs = require('fs');
+const path = require('path');
 const parse = require('csv-parse/lib/sync');
 
 const streamConstants = require('./streams.constants.js');
@@ -44,7 +45,27 @@ function convertFromFile(filePath) {
         }))
         .pipe(process.stdout);
 }
-function convertToFile(filePath) {}
+function convertToFile(filePath) {
+    const baseName = path.basename(filePath, 'csv').slice(0, -1);
+    const pathName = path.dirname(filePath);
+    const writeStream = fs.createWriteStream(`${pathName}/${baseName}.json`);
+
+    console.log(chalk.green(`Convert to JSON file: ${filePath}`));
+
+    fs.createReadStream(filePath)
+        .pipe(through2(function (chunk, enc, next) {
+            const csvText = chunk.toString();
+            const jsonText = JSON.stringify(parse(csvText, {
+                columns: true,
+                skip_empty_lines: true,
+            })).replace(/\s/g, '');
+            this.push(jsonText);
+            next();
+        }))
+        .pipe(writeStream);
+
+    writeStream.on('finish', () => console.log(chalk.green(`${baseName}.json has been generated.`)));
+}
 
 const aliasConfig = {
     'help': 'h',
@@ -87,6 +108,11 @@ function processCommand() {
                 }
                 break;
             case 'convertToFile':
+                if (args.file) {
+                    convertToFile(args.file);
+                } else {
+                    console.error(chalk.red('File path is not provided!\n'));
+                }
                 break;
             default:
                 console.error(chalk.red('Invalid action provided!\n'));
