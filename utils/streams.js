@@ -1,5 +1,6 @@
 const minimist = require('minimist');
 const through2 = require('through2');
+const chalk = require('chalk');
 const fs = require('fs');
 
 const streamConstants = require('./streams.constants.js');
@@ -23,8 +24,9 @@ function transform() {
 }
 function outputFile(filePath) {
     const readStream = fs.createReadStream(filePath);
+    console.log(chalk.green(`---${filePath}---`));
     readStream.pipe(process.stdout);
-    readStream.on('end', () => console.log('---End of file----'));
+    readStream.on('end', () => console.log(chalk.green('---End of file----')));
 }
 function convertFromFile(filePath) {}
 function convertToFile(filePath) {}
@@ -45,10 +47,10 @@ function processCommand() {
     const options = Object.keys(args);
 
     if (options.length === 1) {
-        console.log('Invalid input. Options are not provided.\n');
-        console.log(streamConstants.helpMessage);
+        console.log(chalk.red('Invalid input. Options are not provided.\n'));
+        console.log(chalk.cyan(streamConstants.helpMessage));
     } else if (options.indexOf('help') === 1) {
-        console.log(streamConstants.helpMessage);
+        console.log(chalk.cyan(streamConstants.helpMessage));
     } else if (options.indexOf('action') === 1) {
         switch (args.action) {
             case 'reverse':
@@ -61,7 +63,7 @@ function processCommand() {
                 if (args.file) {
                     outputFile(args.file);
                 } else {
-                    console.error('File path is not provided!\n');
+                    console.error(chalk.red('File path is not provided!\n'));
                 }
                 break;
             case 'convertFromFile':
@@ -69,10 +71,10 @@ function processCommand() {
             case 'convertToFile':
                 break;
             default:
-                console.error('Invalid action provided!\n');
+                console.error(chalk.red('Invalid action provided!\n'));
         }
     } else {
-        console.log('Invalid options.');
+        console.log(chalk.red('Invalid options.'));
     }
 }
 
