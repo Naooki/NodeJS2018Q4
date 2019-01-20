@@ -7,6 +7,7 @@ const parse = require('csv-parse/lib/sync');
 const streamConstants = require('./streams.constants.js');
 
 function reverse() {
+    console.log(chalk.green('reverse:'));
     process.stdin
         .pipe(through2(function(chunk, encoding, next) {
             this.push(chunk.reverse().slice(1));
@@ -16,6 +17,7 @@ function reverse() {
         .pipe(process.stdout);
 }
 function transform() {
+    console.log(chalk.green('trasform:'));
     process.stdin
         .pipe(through2(function(chunk, encoding, next) {
             this.push(chunk.toString().toUpperCase());
@@ -25,11 +27,11 @@ function transform() {
 }
 function outputFile(filePath) {
     const readStream = fs.createReadStream(filePath);
-    console.log(chalk.green(`---${filePath}---`));
+    console.log(chalk.green(`---Output file: ${filePath}---`));
     readStream.pipe(process.stdout);
-    readStream.on('end', () => console.log(chalk.green('---End of file----')));
 }
 function convertFromFile(filePath) {
+    console.log(chalk.green(`---Convert from file: ${filePath}---`));
     fs.createReadStream(filePath)
         .pipe(through2(function (chunk, encoding, next) {
             const csvText = chunk.toString();
