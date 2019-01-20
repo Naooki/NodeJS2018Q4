@@ -2,6 +2,7 @@ const minimist = require('minimist');
 const through2 = require('through2');
 const chalk = require('chalk');
 const fs = require('fs');
+const parse = require('csv-parse/lib/sync');
 
 const streamConstants = require('./streams.constants.js');
 
@@ -28,7 +29,19 @@ function outputFile(filePath) {
     readStream.pipe(process.stdout);
     readStream.on('end', () => console.log(chalk.green('---End of file----')));
 }
-function convertFromFile(filePath) {}
+function convertFromFile(filePath) {
+    fs.createReadStream(filePath)
+        .pipe(through2(function (chunk, encoding, next) {
+            const csvText = chunk.toString();
+            const jsonText = JSON.stringify(parse(csvText, {
+                columns: true,
+                skip_empty_lines: true,
+            }));
+            this.push(jsonText);
+            next();
+        }))
+        .pipe(process.stdout);
+}
 function convertToFile(filePath) {}
 
 const aliasConfig = {
@@ -42,8 +55,6 @@ processCommand();
 
 function processCommand() {
     const args = getMinimistArgs();
-    console.log(JSON.stringify(args));
-
     const options = Object.keys(args);
 
     if (options.length === 1) {
@@ -67,6 +78,11 @@ function processCommand() {
                 }
                 break;
             case 'convertFromFile':
+                if (args.file) {
+                    convertFromFile(args.file);
+                } else {
+                    console.error(chalk.red('File path is not provided!\n'));
+                }
                 break;
             case 'convertToFile':
                 break;
