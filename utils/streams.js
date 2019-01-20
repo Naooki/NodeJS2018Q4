@@ -1,5 +1,6 @@
 const minimist = require('minimist');
 const through2 = require('through2');
+const fs = require('fs');
 
 const streamConstants = require('./streams.constants.js');
 
@@ -20,7 +21,11 @@ function transform() {
         }))
         .pipe(process.stdout);
 }
-function outputFile(filePath) {}
+function outputFile(filePath) {
+    const readStream = fs.createReadStream(filePath);
+    readStream.pipe(process.stdout);
+    readStream.on('end', () => console.log('---End of file----'));
+}
 function convertFromFile(filePath) {}
 function convertToFile(filePath) {}
 
@@ -53,6 +58,11 @@ function processCommand() {
                 transform();
                 break;
             case 'outputFile':
+                if (args.file) {
+                    outputFile(args.file);
+                } else {
+                    console.error('File path is not provided!\n');
+                }
                 break;
             case 'convertFromFile':
                 break;
