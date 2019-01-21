@@ -4,6 +4,8 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 const parse = require('csv-parse/lib/sync');
+const util = require('util');
+const request = require('request');
 
 const streamConstants = require('./streams.constants.js');
 
@@ -67,6 +69,35 @@ function convertToFile(filePath) {
     writeStream.on('finish', () => console.log(chalk.green(`${baseName}.json has been generated.`)));
 }
 
+function cssBundler(filePath) {
+    util.promisify(fs.readdir)(filePath)
+        .then(files => {
+            if (!files || !files.length) {
+                console.log(chalk.red('No files to bundle.'));
+                return;
+            }
+            const bundleFileName = 'bundle.css';
+            const writeStream = fs.createWriteStream(`${filePath}/${bundleFileName}`, { flags: 'a'});
+
+            files.map(file => {
+                if (path.extname(file).toLowerCase() === '.css' && file !== bundleFileName) {
+                    fs.createReadStream(`${filePath}/${file}`)
+                    .pipe(through2(function(chunk, encoding, next) {
+                      const text = `${chunk.toString()}\n`;
+                      this.push(text);
+                      next();
+                    }))
+                    .pipe(writeStream);
+                }
+            });
+
+            const remoteFileWriteStream = fs.createWriteStream(`${filePath}/${bundleFileName}`, { flags: 'a'});
+            request(streamConstants.remoteCssFileUrl).pipe(remoteFileWriteStream);
+            remoteFileWriteStream.on('finish', () => console.log(chalk.green('Bundle.css has been generated.')));
+        })
+        .catch(err => console.error(chalk.red(err)));
+}
+
 const aliasConfig = {
     'help': 'h',
     'action': 'a',
@@ -112,6 +143,13 @@ function processCommand() {
                     convertToFile(args.file);
                 } else {
                     console.error(chalk.red('File path is not provided!\n'));
+                }
+                break;
+            case 'cssBundler':
+                if (args.path) {
+                    cssBundler(args.path);
+                } else {
+                    console.error(chalk.red('Path is not provided!\n'));
                 }
                 break;
             default:
