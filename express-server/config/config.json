@@ -1,0 +1,11 @@
+{
+    "userCredentials": {
+        "id": 1,
+        "username": "egor sheynikov",
+        "email": "sheynikovea@gmail.com",
+        "password": "qwerty"
+    },
+    "jwtCredentials": {
+        "secret": "NodeJS2018Q_HW5"
+    }
+}
