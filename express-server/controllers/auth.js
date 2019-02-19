@@ -1,9 +1,30 @@
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
 const config = require('../config/config.json');
 const resp = require('../utils/response');
+const strategies = require('./strategies');
 
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
+
+passport.use('local', strategies.local);
+
+
+function passportAuthenticate(strategyName) {
+    return (req, res) => {
+        passport.authenticate(strategyName, (err, user, info) => {
+            if (err) {
+                res.status(403);
+                return res.send(err);
+            }
+            res.status(200);
+            return res.send(info);
+        })(req, res);
+    };
+}
 
 module.exports = {
     auth: (req, res) => {
@@ -32,4 +53,5 @@ module.exports = {
             user: { email, username, password },
         }, token));
     },
+    authPassportLocal: passportAuthenticate('local'),
 };

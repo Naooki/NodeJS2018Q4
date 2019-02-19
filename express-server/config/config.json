@@ -6,6 +6,7 @@
         "password": "qwerty"
     },
     "jwtCredentials": {
-        "secret": "NodeJS2018Q_HW5"
+        "secret": "NodeJS2018Q_HW5",
+        "session": false
     }
 }
