@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
 const cookieParser = require('./middlewares/cookieParser');
 const queryParser = require('./middlewares/queryParser');

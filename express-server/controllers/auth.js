@@ -11,6 +11,9 @@ passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
 
 passport.use('local', strategies.local);
+passport.use('twitter', strategies.twitter);
+passport.use('facebook', strategies.facebook);
+passport.use('google', strategies.google);
 
 
 function passportAuthenticate(strategyName) {
@@ -54,4 +57,7 @@ module.exports = {
         }, token));
     },
     authPassportLocal: passportAuthenticate('local'),
+    authPassportTwitter: passportAuthenticate('twitter'),
+    authPassportFacebook: passportAuthenticate('facebook'),
+    authPassportGoogle: passportAuthenticate('google'),
 };

@@ -8,5 +8,22 @@
     "jwtCredentials": {
         "secret": "NodeJS2018Q_HW5",
         "session": false
+    },
+    "strategies": {
+        "twitter": {
+            "consumerKey": "CONSUMER_KEY",
+            "consumerSecret": "CONSUMER_SECRET",
+            "callbackURL": "http://localhost:8080/api/auth/twitter/callback"
+        },
+        "facebook": {
+            "clientID": "455400084997038",
+            "clientSecret": "fe53275cd96e72cc2db51ddfa316958d",
+            "callbackURL": "http://localhost:8080/api/auth/facebook/callback"
+        },
+        "google": {
+            "clientID": "914153047415-1kvvbsoacc3rtd52dorlp8tf62fubpqr.apps.googleusercontent.com",
+            "clientSecret": "d92Y34fz_8z3d3TPkJdPwcQv",
+            "callbackURL": "http://localhost:8080/api/auth/google/callback"
+        }
     }
 }
